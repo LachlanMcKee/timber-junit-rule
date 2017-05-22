@@ -42,6 +42,11 @@ public class LogTestWithThreadRules {
         mExpectedOutput = expectedOutput;
     }
 
+    private String getThreadDetailsPrefix() {
+        Thread thread = Thread.currentThread();
+        return thread.getId() + "/" + thread.getName();
+    }
+
     @Test
     public void givenOutputStreamSetup_whenLogExecutedOnMainThread_thenVerifyExpectedOutput() {
         // given
@@ -51,7 +56,7 @@ public class LogTestWithThreadRules {
         LogTester.log(mLogType, mMessage);
 
         // then
-        LogTesterTestUtils.assertOutput(outputStream, "1/main " + mExpectedOutput);
+        LogTesterTestUtils.assertOutput(outputStream, getThreadDetailsPrefix() + " " + mExpectedOutput);
     }
 
     @Test
@@ -76,7 +81,7 @@ public class LogTestWithThreadRules {
         String[] split = output.split("\\s");
 
         // Ensure the thread id and name are not referring to main.
-        Assert.assertNotEquals("1/main", split[0]);
+        Assert.assertNotEquals(getThreadDetailsPrefix(), split[0]);
 
         // Compare the rest of the string after removing the thread details.
         StringBuilder builder = new StringBuilder();
