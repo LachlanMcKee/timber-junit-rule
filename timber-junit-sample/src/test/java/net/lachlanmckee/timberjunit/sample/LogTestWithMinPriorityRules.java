@@ -23,6 +23,7 @@ public class LogTestWithMinPriorityRules {
         public TimberTestRule mTimberTestRule = TimberTestRule.builder()
                 .minPriority(Log.DEBUG)
                 .showTimestamp(false)
+                .onlyLogWhenTestFails(false)
                 .build();
 
         @Parameterized.Parameters
@@ -65,6 +66,7 @@ public class LogTestWithMinPriorityRules {
         public TimberTestRule mTimberTestRule = TimberTestRule.builder()
                 .minPriority(Log.INFO)
                 .showTimestamp(false)
+                .onlyLogWhenTestFails(false)
                 .build();
 
         @Parameterized.Parameters
@@ -107,6 +109,7 @@ public class LogTestWithMinPriorityRules {
         public TimberTestRule mTimberTestRule = TimberTestRule.builder()
                 .minPriority(Log.WARN)
                 .showTimestamp(false)
+                .onlyLogWhenTestFails(false)
                 .build();
 
         @Parameterized.Parameters
@@ -149,6 +152,7 @@ public class LogTestWithMinPriorityRules {
         public TimberTestRule mTimberTestRule = TimberTestRule.builder()
                 .minPriority(Log.ERROR)
                 .showTimestamp(false)
+                .onlyLogWhenTestFails(false)
                 .build();
 
         @Parameterized.Parameters
