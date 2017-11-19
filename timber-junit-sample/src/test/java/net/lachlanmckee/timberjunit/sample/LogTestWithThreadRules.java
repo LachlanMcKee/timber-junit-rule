@@ -19,6 +19,7 @@ public class LogTestWithThreadRules {
     public TimberTestRule mTimberTestRule = TimberTestRule.builder()
             .showThread(true)
             .showTimestamp(false)
+            .onlyLogWhenTestFails(false)
             .build();
 
     @Parameterized.Parameters

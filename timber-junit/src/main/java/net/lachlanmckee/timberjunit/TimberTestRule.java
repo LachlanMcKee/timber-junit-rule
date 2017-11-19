@@ -8,6 +8,9 @@ import org.junit.runners.model.Statement;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -27,24 +30,45 @@ public class TimberTestRule implements TestRule {
     }
 
     /**
+     * @return a {@link TimberTestRule} that logs messages of any priority regardless of the
+     * test outcome
+     */
+    public static TimberTestRule logAllAlways() {
+        return new Rules()
+                .onlyLogWhenTestFails(false)
+                .build();
+    }
+
+    /**
      * @return a {@link TimberTestRule} that logs all messages, regardless of their priority.
      */
-    public static TimberTestRule logAll() {
+    public static TimberTestRule logAllWhenTestFails() {
         return new Rules()
                 .build();
     }
 
     /**
-     * @return a {@link TimberTestRule} that only logs error messages.
+     * @return a {@link TimberTestRule} that only logs error messages regardless of the test
+     * outcome.
      */
-    public static TimberTestRule logErrorsOnly() {
+    public static TimberTestRule logErrorsAlways() {
+        return new Rules()
+                .onlyLogWhenTestFails(false)
+                .minPriority(Log.ERROR)
+                .build();
+    }
+
+    /**
+     * @return a {@link TimberTestRule} that only logs error messages when a unit test fails.
+     */
+    public static TimberTestRule logErrorsWhenTestFails() {
         return new Rules()
                 .minPriority(Log.ERROR)
                 .build();
     }
 
     /**
-     * @return a {@link Rules} class which is used as a builder to create a {@link TimberTestRule}
+     * @return a {@link Rules} class which is used as a builder to create a {@link TimberTestRule}.
      */
     public static Rules builder() {
         return new Rules();
@@ -70,11 +94,13 @@ public class TimberTestRule implements TestRule {
         private int mMinPriority;
         private boolean mShowThread;
         private boolean mShowTimestamp;
+        private boolean mOnlyLogWhenTestFails;
 
         Rules() {
             mMinPriority = Log.VERBOSE;
             mShowThread = false;
             mShowTimestamp = true;
+            mOnlyLogWhenTestFails = true;
         }
 
         /**
@@ -120,6 +146,17 @@ public class TimberTestRule implements TestRule {
         }
 
         /**
+         * Defines whether the logs are only output if the unit test fails.
+         *
+         * @param onlyLogWhenTestFails whether the logs are only output when a test fails.
+         * @return the mutated {@link Rules}
+         */
+        public Rules onlyLogWhenTestFails(boolean onlyLogWhenTestFails) {
+            mOnlyLogWhenTestFails = onlyLogWhenTestFails;
+            return this;
+        }
+
+        /**
          * Builds the JUnit test rule based on the defined rules.
          *
          * @return a new JUnit test rule instance.
@@ -134,11 +171,11 @@ public class TimberTestRule implements TestRule {
      */
     private static class TimberStatement extends Statement {
         private final Statement mNext;
-        private final JUnitTimberTree mTree;
+        private final BufferedJUnitTimberTree mTree;
 
         TimberStatement(Statement base, Rules rules) {
             mNext = base;
-            mTree = new JUnitTimberTree(rules);
+            mTree = new BufferedJUnitTimberTree(rules);
         }
 
         @Override
@@ -146,8 +183,12 @@ public class TimberTestRule implements TestRule {
             Timber.plant(mTree);
             try {
                 mNext.evaluate();
-            }
-            finally {
+
+            } catch (Throwable t) {
+                mTree.flushLogs();
+                throw t;
+
+            } finally {
                 // Ensure the tree is removed to avoid duplicate logging.
                 Timber.uproot(mTree);
             }
@@ -157,71 +198,107 @@ public class TimberTestRule implements TestRule {
     /**
      * A Timber tree that logs to the Java System.out rather than using the Android logger.
      */
-    private static class JUnitTimberTree extends Timber.DebugTree {
+    private static final class BufferedJUnitTimberTree extends Timber.DebugTree {
         private final Rules mRules;
+        private final List<String> mLogMessageBuffer;
 
-        JUnitTimberTree(Rules rules) {
+        BufferedJUnitTimberTree(Rules rules) {
             mRules = rules;
+            mLogMessageBuffer = new ArrayList<>();
         }
 
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {
-            // Avoid logging if the priority is too low.
-            if (priority < mRules.mMinPriority) {
+            String logMessage = createLogMessage(mRules, priority, tag, message);
+            if (logMessage == null) {
                 return;
             }
 
-            // Obtain the correct log type prefix.
-            final char type;
-            switch (priority) {
-                case Log.VERBOSE:
-                    type = 'V';
-                    break;
+            if (mRules.mOnlyLogWhenTestFails) {
+                mLogMessageBuffer.add(logMessage);
 
-                case Log.DEBUG:
-                    type = 'D';
-                    break;
-
-                case Log.INFO:
-                    type = 'I';
-                    break;
-
-                case Log.WARN:
-                    type = 'W';
-                    break;
-
-                case Log.ERROR:
-                default:
-                    type = 'E';
-                    break;
+            } else {
+                System.out.println(logMessage);
             }
-
-            StringBuilder logBuilder = new StringBuilder();
-
-            if (mRules.mShowTimestamp) {
-                logBuilder
-                        .append(THREAD_LOCAL_FORMAT.get().format(System.currentTimeMillis()))
-                        .append(" ");
-            }
-
-            if (mRules.mShowThread) {
-                Thread thread = Thread.currentThread();
-                logBuilder
-                        .append(thread.getId())
-                        .append("/")
-                        .append(thread.getName())
-                        .append(" ");
-            }
-
-            logBuilder
-                    .append(type)
-                    .append("/")
-                    .append(tag)
-                    .append(": ")
-                    .append(message);
-
-            System.out.println(logBuilder);
         }
+
+        /**
+         * Flushes all the previously stored log messages.
+         */
+        private void flushLogs() {
+            Iterator<String> iterator = mLogMessageBuffer.iterator();
+            while (iterator.hasNext()) {
+                System.out.println(iterator.next());
+                iterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Creates a log message based on the rules and Timber log details.
+     *
+     * @param rules    the rules used to construct the message.
+     * @param priority the priority of the log.
+     * @param tag      the tag of the log.
+     * @param message  the message of the log.
+     * @return a log message (may be null).
+     */
+    private static String createLogMessage(Rules rules, int priority, String tag, String message) {
+        // Avoid logging if the priority is too low.
+        if (priority < rules.mMinPriority) {
+            return null;
+        }
+
+        // Obtain the correct log type prefix.
+        final char type;
+        switch (priority) {
+            case Log.VERBOSE:
+                type = 'V';
+                break;
+
+            case Log.DEBUG:
+                type = 'D';
+                break;
+
+            case Log.INFO:
+                type = 'I';
+                break;
+
+            case Log.WARN:
+                type = 'W';
+                break;
+
+            case Log.ERROR:
+            default:
+                type = 'E';
+                break;
+        }
+
+        StringBuilder logBuilder = new StringBuilder();
+
+        if (rules.mShowTimestamp) {
+            logBuilder
+                    .append(THREAD_LOCAL_FORMAT.get().format(System.currentTimeMillis()))
+                    .append(" ");
+        }
+
+        if (rules.mShowThread) {
+            Thread thread = Thread.currentThread();
+            logBuilder
+                    .append(thread.getId())
+                    .append("/")
+                    .append(thread.getName())
+                    .append(" ");
+        }
+
+        logBuilder
+                .append(type)
+                .append("/")
+                .append(tag)
+                .append(": ")
+                .append(message);
+
+        return logBuilder.toString();
     }
 
     /**
