@@ -23,6 +23,7 @@ public class LogTestWithTimestampRules {
     @Rule
     public TimberTestRule mTimberTestRule = TimberTestRule.builder()
             .showTimestamp(true)
+            .onlyLogWhenTestFails(false)
             .build();
 
     @Parameterized.Parameters

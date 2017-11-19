@@ -7,6 +7,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.sonarqube" version "2.5"
+}
+
 allprojects {
     repositories {
         mavenCentral()
@@ -21,4 +25,11 @@ ext {
     buildToolsVersion = '25.0.1'
     sourceCompatibilityVersion = JavaVersion.VERSION_1_7
     targetCompatibilityVersion = JavaVersion.VERSION_1_7
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "Timber JUnit Rule"
+        property "sonar.projectKey", "timber-junit-rule"
+    }
 }
