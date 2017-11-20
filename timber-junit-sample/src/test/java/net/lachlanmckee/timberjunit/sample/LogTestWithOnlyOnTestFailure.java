@@ -34,7 +34,7 @@ public class LogTestWithOnlyOnTestFailure {
     }
 
     @Test
-    public void given_when_then() throws InterruptedException {
+    public void deliberatelyFailingUnitTest() throws InterruptedException {
         LogTester.log(LogTester.LogType.ERROR, "Test");
 
         expectedException.expect(AssertionError.class);
