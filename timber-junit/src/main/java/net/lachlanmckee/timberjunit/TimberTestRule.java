@@ -201,6 +201,7 @@ public class TimberTestRule implements TestRule {
     private static final class BufferedJUnitTimberTree extends Timber.DebugTree {
         private final Rules mRules;
         private final List<String> mLogMessageBuffer;
+        private final Object bufferLock = new Object();
 
         BufferedJUnitTimberTree(Rules rules) {
             mRules = rules;
@@ -215,7 +216,9 @@ public class TimberTestRule implements TestRule {
             }
 
             if (mRules.mOnlyLogWhenTestFails) {
-                mLogMessageBuffer.add(logMessage);
+                synchronized (bufferLock) {
+                    mLogMessageBuffer.add(logMessage);
+                }
 
             } else {
                 System.out.println(logMessage);
@@ -226,10 +229,12 @@ public class TimberTestRule implements TestRule {
          * Flushes all the previously stored log messages.
          */
         private void flushLogs() {
-            Iterator<String> iterator = mLogMessageBuffer.iterator();
-            while (iterator.hasNext()) {
-                System.out.println(iterator.next());
-                iterator.remove();
+            synchronized (bufferLock) {
+                Iterator<String> iterator = mLogMessageBuffer.iterator();
+                while (iterator.hasNext()) {
+                    System.out.println(iterator.next());
+                    iterator.remove();
+                }
             }
         }
     }

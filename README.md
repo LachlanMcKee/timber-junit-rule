@@ -45,5 +45,5 @@ As seen in the example above, there are many ways to modify the output using the
 This library is available on Maven, you can add it to your project using the following gradle dependencies:
 
 ```gradle
-testCompile 'net.lachlanmckee:timber-junit-rule:1.0.0'
+testCompile 'net.lachlanmckee:timber-junit-rule:1.0.1'
 ```
