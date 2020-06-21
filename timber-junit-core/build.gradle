@@ -9,7 +9,6 @@ android {
 }
 
 dependencies {
-    compileOnly 'junit:junit:4.12'
     compileOnly 'com.jakewharton.timber:timber:4.5.1'
 }
 

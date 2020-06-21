@@ -1,5 +1,6 @@
 package net.lachlanmckee.timberjunit.sample;
 
+import net.lachlanmckee.timberjunit.Rules;
 import net.lachlanmckee.timberjunit.TimberTestRule;
 
 import org.junit.Rule;
@@ -21,10 +22,9 @@ import java.util.TimeZone;
 @PowerMockRunnerDelegate(Parameterized.class)
 public class LogTestWithTimestampRules {
     @Rule
-    public TimberTestRule mTimberTestRule = TimberTestRule.builder()
+    public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
             .showTimestamp(true)
-            .onlyLogWhenTestFails(false)
-            .build();
+            .onlyLogWhenTestFails(false));
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {

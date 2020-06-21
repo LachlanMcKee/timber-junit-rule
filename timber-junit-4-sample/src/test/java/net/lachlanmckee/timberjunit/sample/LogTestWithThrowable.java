@@ -1,5 +1,6 @@
 package net.lachlanmckee.timberjunit.sample;
 
+import net.lachlanmckee.timberjunit.Rules;
 import net.lachlanmckee.timberjunit.TimberTestRule;
 
 import org.junit.Rule;
@@ -16,11 +17,10 @@ public class LogTestWithThrowable {
     private static final String EXCEPTION_OUTPUT = "net.lachlanmckee.timberjunit.sample.LogTestWithThrowable$NoStackTraceThrowable";
 
     @Rule
-    public TimberTestRule mTimberTestRule = TimberTestRule.builder()
+    public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
             .showThread(false)
             .showTimestamp(false)
-            .onlyLogWhenTestFails(false)
-            .build();
+            .onlyLogWhenTestFails(false));
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
