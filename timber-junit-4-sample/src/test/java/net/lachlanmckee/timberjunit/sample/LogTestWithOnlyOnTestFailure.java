@@ -21,7 +21,7 @@ public class LogTestWithOnlyOnTestFailure {
     @Rule
     public RuleChain chain = RuleChain
             .outerRule(expectedException)
-            .around(new TimberTestRule(new Rules()
+            .around(TimberTestRule.customRules(new Rules()
                     .showThread(false)
                     .showTimestamp(false)
                     .onlyLogWhenTestFails(true)));

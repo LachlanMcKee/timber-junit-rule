@@ -17,7 +17,7 @@ public class LogTestWithThrowable {
     private static final String EXCEPTION_OUTPUT = "net.lachlanmckee.timberjunit.sample.LogTestWithThrowable$NoStackTraceThrowable";
 
     @Rule
-    public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+    public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
             .showThread(false)
             .showTimestamp(false)
             .onlyLogWhenTestFails(false));

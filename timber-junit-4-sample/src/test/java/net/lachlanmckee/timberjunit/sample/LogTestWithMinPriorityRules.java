@@ -21,7 +21,7 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class DebugMin {
         @Rule
-        public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.DEBUG)
                 .showTimestamp(false)
                 .onlyLogWhenTestFails(false));
@@ -63,7 +63,7 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class InfoMin {
         @Rule
-        public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.INFO)
                 .showTimestamp(false)
                 .onlyLogWhenTestFails(false));
@@ -105,7 +105,7 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class WarnMin {
         @Rule
-        public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.WARN)
                 .showTimestamp(false)
                 .onlyLogWhenTestFails(false));
@@ -147,7 +147,7 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class ErrorMin {
         @Rule
-        public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.ERROR)
                 .showTimestamp(false)
                 .onlyLogWhenTestFails(false));

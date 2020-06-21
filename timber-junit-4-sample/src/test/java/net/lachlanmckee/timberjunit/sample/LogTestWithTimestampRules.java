@@ -23,7 +23,7 @@ import java.util.TimeZone;
 @PowerMockRunnerDelegate(Parameterized.class)
 public class LogTestWithTimestampRules {
     @Rule
-    public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+    public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
             .showTimestamp(true)
             .onlyLogWhenTestFails(false));
 

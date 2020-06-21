@@ -17,7 +17,7 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(Parameterized.class)
 public class LogTestWithThreadRules {
     @Rule
-    public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+    public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
             .showThread(true)
             .showTimestamp(false)
             .onlyLogWhenTestFails(false));

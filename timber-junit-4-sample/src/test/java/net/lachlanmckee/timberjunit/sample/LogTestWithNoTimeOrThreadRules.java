@@ -15,7 +15,7 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class LogTestWithNoTimeOrThreadRules {
     @Rule
-    public TimberTestRule mTimberTestRule = new TimberTestRule(new Rules()
+    public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
             .showThread(false)
             .showTimestamp(false)
             .onlyLogWhenTestFails(false));

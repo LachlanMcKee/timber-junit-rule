@@ -18,8 +18,15 @@ import timber.log.Timber;
 public class TimberTestRule implements TestRule {
     private final Rules mRules;
 
-    public TimberTestRule(Rules rules) {
+    private TimberTestRule(Rules rules) {
         mRules = rules;
+    }
+
+    /**
+     * @return a {@link TimberTestRule} that uses the input rules to define the behaviour.
+     */
+    public static TimberTestRule customRules(Rules rules) {
+        return new TimberTestRule(rules);
     }
 
     /**
