@@ -1,5 +1,6 @@
 package net.lachlanmckee.timberjunit.sample;
 
+import net.lachlanmckee.timberjunit.BufferedJUnitTimberTree;
 import net.lachlanmckee.timberjunit.Rules;
 import net.lachlanmckee.timberjunit.TimberTestRule;
 
@@ -18,7 +19,7 @@ import java.util.Collection;
 import java.util.TimeZone;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({System.class, TimberTestRule.class})
+@PrepareForTest({System.class, BufferedJUnitTimberTree.class})
 @PowerMockRunnerDelegate(Parameterized.class)
 public class LogTestWithTimestampRules {
     @Rule

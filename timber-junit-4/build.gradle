@@ -9,9 +9,9 @@ android {
 }
 
 dependencies {
-    provided 'junit:junit:4.12'
-    compile project(':timber-junit-core')
-    provided 'com.jakewharton.timber:timber:4.5.1'
+    compileOnly 'junit:junit:4.12'
+    api project(':timber-junit-core')
+    compileOnly 'com.jakewharton.timber:timber:4.5.1'
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

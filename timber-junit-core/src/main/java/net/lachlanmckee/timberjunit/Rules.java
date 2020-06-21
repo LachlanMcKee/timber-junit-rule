@@ -3,8 +3,8 @@ package net.lachlanmckee.timberjunit;
 import android.util.Log;
 
 /**
- * Defines a set of rules in which the {@link TimberTestRule}'s internal Timber tree must
- * adhere to when intercepting log messages.
+ * Defines a set of rules in which the {@link BufferedJUnitTimberTree} must adhere to when
+ * intercepting log messages.
  * <p>
  * The types of rules applied are:
  * <ol>
