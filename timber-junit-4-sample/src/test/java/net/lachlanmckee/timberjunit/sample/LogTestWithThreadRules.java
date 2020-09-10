@@ -1,5 +1,6 @@
 package net.lachlanmckee.timberjunit.sample;
 
+import net.lachlanmckee.timberjunit.Rules;
 import net.lachlanmckee.timberjunit.TimberTestRule;
 
 import org.junit.Assert;
@@ -16,11 +17,10 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(Parameterized.class)
 public class LogTestWithThreadRules {
     @Rule
-    public TimberTestRule mTimberTestRule = TimberTestRule.builder()
+    public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
             .showThread(true)
             .showTimestamp(false)
-            .onlyLogWhenTestFails(false)
-            .build();
+            .onlyLogWhenTestFails(false));
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {

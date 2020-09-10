@@ -2,6 +2,7 @@ package net.lachlanmckee.timberjunit.sample;
 
 import android.util.Log;
 
+import net.lachlanmckee.timberjunit.Rules;
 import net.lachlanmckee.timberjunit.TimberTestRule;
 
 import org.junit.Rule;
@@ -20,11 +21,10 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class DebugMin {
         @Rule
-        public TimberTestRule mTimberTestRule = TimberTestRule.builder()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.DEBUG)
                 .showTimestamp(false)
-                .onlyLogWhenTestFails(false)
-                .build();
+                .onlyLogWhenTestFails(false));
 
         @Parameterized.Parameters
         public static Collection<Object[]> data() {
@@ -63,11 +63,10 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class InfoMin {
         @Rule
-        public TimberTestRule mTimberTestRule = TimberTestRule.builder()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.INFO)
                 .showTimestamp(false)
-                .onlyLogWhenTestFails(false)
-                .build();
+                .onlyLogWhenTestFails(false));
 
         @Parameterized.Parameters
         public static Collection<Object[]> data() {
@@ -106,11 +105,10 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class WarnMin {
         @Rule
-        public TimberTestRule mTimberTestRule = TimberTestRule.builder()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.WARN)
                 .showTimestamp(false)
-                .onlyLogWhenTestFails(false)
-                .build();
+                .onlyLogWhenTestFails(false));
 
         @Parameterized.Parameters
         public static Collection<Object[]> data() {
@@ -149,11 +147,10 @@ public class LogTestWithMinPriorityRules {
     @RunWith(Parameterized.class)
     public static class ErrorMin {
         @Rule
-        public TimberTestRule mTimberTestRule = TimberTestRule.builder()
+        public TimberTestRule mTimberTestRule = TimberTestRule.customRules(new Rules()
                 .minPriority(Log.ERROR)
                 .showTimestamp(false)
-                .onlyLogWhenTestFails(false)
-                .build();
+                .onlyLogWhenTestFails(false));
 
         @Parameterized.Parameters
         public static Collection<Object[]> data() {

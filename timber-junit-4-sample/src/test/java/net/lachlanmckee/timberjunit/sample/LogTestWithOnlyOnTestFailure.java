@@ -1,5 +1,6 @@
 package net.lachlanmckee.timberjunit.sample;
 
+import net.lachlanmckee.timberjunit.Rules;
 import net.lachlanmckee.timberjunit.TimberTestRule;
 
 import org.junit.AfterClass;
@@ -20,11 +21,10 @@ public class LogTestWithOnlyOnTestFailure {
     @Rule
     public RuleChain chain = RuleChain
             .outerRule(expectedException)
-            .around(TimberTestRule.builder()
+            .around(TimberTestRule.customRules(new Rules()
                     .showThread(false)
                     .showTimestamp(false)
-                    .onlyLogWhenTestFails(true)
-                    .build());
+                    .onlyLogWhenTestFails(true)));
 
     private static OutputStream outputStream;
 

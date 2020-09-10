@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+    }
+}
+
+dependencies {
+    compileOnly 'junit:junit:4.12'
+    api project(':timber-junit-core')
+    compileOnly 'com.jakewharton.timber:timber:4.5.1'
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
