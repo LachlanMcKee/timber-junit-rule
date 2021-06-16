@@ -313,7 +313,7 @@ public class TimberTestRule implements TestRule {
             new ThreadLocal<DateFormat>() {
                 @Override
                 protected DateFormat initialValue() {
-                    return new SimpleDateFormat("HH:mm:ss:SSSSSSS", Locale.ENGLISH);
+                    return new SimpleDateFormat("HH:mm:ss.SSS", Locale.ENGLISH);
                 }
             };
 
